@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dashboard - FontVisual Demo</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../resources/css/styles.css">
+</head>
+<body>
+<!-- header -->
+   @include('../resources/views/Admin/layout/header.blade.php')
+<!-- end header -->
+<div class="container">
+  <aside class="sidebar">
+    <div class="nav-item active" onclick="location.href='index.html'"><span class="icon">🏠</span> <span>Trang chủ</span></div>
+    <div class="nav-item" onclick="location.href='preview_editor.html'"><span class="icon">🧭</span> <span>Xem trước</span></div>
+    <div class="nav-item" onclick="location.href='fonts.html'"><span class="icon">T</span> <span>Phông chữ</span></div>
+    <div class="nav-item" onclick="location.href='colors.html'"><span class="icon">🎨</span> <span>Màu sắc</span></div>
+    <div class="nav-item" onclick="location.href='images.html'"><span class="icon">🖼️</span> <span>Hình ảnh</span></div>
+    <div class="nav-item" onclick="location.href='showcase.html'"><span class="icon">🖥️</span> <span>Trưng bày</span></div>
+    <div class="nav-item" onclick="location.href='preview_names.html'"><span class="icon">📛</span> <span>Xem trước tên</span></div>
+    <div class="nav-item" onclick="location.href='settings.html'"><span class="icon">⚙</span> <span>Cài đặt</span></div>
+  </aside>
+
+  <main class="main">
+    
+<div class="page-title">Chào mừng bạn đến với bảng điều khiển FontVisual!</div>
+<div class="card">
+  <div class="toolbar">
+    <div><strong>Bắt đầu</strong></div>
+  </div>
+  <ul class="small-muted">
+    <li>Bắt đầu tải lên phông chữ của riêng bạn.</li>
+    <li>Bắt đầu tải lên hình nền của riêng bạn.</li>
+    <li>Bạn cần một trang xem trước hiển thị tất cả phông chữ của mình? Hãy tạo một trang Trình diễn.</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="page-title" style="font-size:18px">Tài nguyên</div>
+  <div class="small-muted">Kiểm tra Trung tâm trợ giúp của chúng tôi</div>
+</div>
+
+  </main>
+</div>
+
+<script src="../resources/js/script.js"></script>
+</body>
+</html>

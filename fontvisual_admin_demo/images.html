@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Images - FontVisual Demo</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="header">
+  <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" fill="#F6A11A"/></svg> fontvisual</div>
+  <div class="header-right">
+    <div class="icon-btn" title="Help">?</div>
+    <div class="icon-btn" title="Settings">⚙</div>
+    <a class="btn" href="#">Nâng cấp</a>
+    <div class="icon-btn">👤</div>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="nav-item active" onclick="location.href='index.html'"><span class="icon">🏠</span> <span>Trang chủ</span></div>
+    <div class="nav-item" onclick="location.href='preview_editor.html'"><span class="icon">🧭</span> <span>Xem trước</span></div>
+    <div class="nav-item" onclick="location.href='fonts.html'"><span class="icon">T</span> <span>Phông chữ</span></div>
+    <div class="nav-item" onclick="location.href='colors.html'"><span class="icon">🎨</span> <span>Màu sắc</span></div>
+    <div class="nav-item" onclick="location.href='images.html'"><span class="icon">🖼️</span> <span>Hình ảnh</span></div>
+    <div class="nav-item" onclick="location.href='showcase.html'"><span class="icon">🖥️</span> <span>Trưng bày</span></div>
+    <div class="nav-item" onclick="location.href='preview_names.html'"><span class="icon">📛</span> <span>Xem trước tên</span></div>
+    <div class="nav-item" onclick="location.href='settings.html'"><span class="icon">⚙</span> <span>Cài đặt</span></div>
+  </aside>
+
+  <main class="main">
+    
+<div class="page-title">Thư viện ảnh</div>
+<div class="card">
+  <div class="uploader">Kéo & thả hình ảnh vào đây<br><small class="small-muted">Tối đa 5 MB mỗi tệp - JPEG, PNG</small></div>
+</div>
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Hình ảnh</th><th>Tên tệp</th><th>Cách sử dụng</th><th>Trưng bày</th></tr></thead>
+    <tbody>
+      <tr><td><img src="https://placekitten.com/80/80" style="border-radius:6px"></td><td>cao_tuyet.jpg</td><td>Biểu trưng</td><td>Xem</td></tr>
+    </tbody>
+  </table>
+</div>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

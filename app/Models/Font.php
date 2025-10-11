@@ -18,7 +18,7 @@ class Font extends Model
         'category_id',
         'downloads',
         'status',
-        'cretaed_at',
+        'created_at',
         'updated_at',
     ];
 

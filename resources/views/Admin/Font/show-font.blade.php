@@ -36,8 +36,8 @@
 
     <div class="mt-3">
         <a href="{{ route('admin.fonts.index') }}" class="btn btn-secondary">⬅ Quay lại danh sách</a>
-        <a href="{{ route('áminfonts.edit', $font->id) }}" class="btn btn-warning">✏ Sửa</a>
-        <form action="{{ route('adminfonts.destroy', $font->id) }}" method="POST" style="display:inline;">
+        <a href="{{ route('admin.fonts.edit', $font->id) }}" class="btn btn-warning">✏ Sửa</a>
+        <form action="{{ route('admin.fonts.destroy', $font->id) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-danger"

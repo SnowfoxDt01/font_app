@@ -7,6 +7,11 @@
   --bg:#f8fafc;
 }
 *{box-sizing:border-box}
+.btn {
+  all: unset; /* Xóa toàn bộ style mặc định của bootstrap */
+  cursor: pointer;
+}
+
 body{font-family:Inter,Arial,Helvetica,sans-serif;background:#fff;color:#111;margin:0}
 .header{height:64px;border-bottom:1px solid #e6e9ee;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#fff}
 .logo{display:flex;align-items:center;gap:10px;color:var(--accent);font-weight:700;font-size:20px}
@@ -19,8 +24,6 @@ body{font-family:Inter,Arial,Helvetica,sans-serif;background:#fff;color:#111;mar
 .page-title{font-size:24px;font-weight:700;color:#5b3b00;margin-bottom:16px}
 .card{background:#fff;border:1px solid #e8edf2;border-radius:8px;padding:18px;margin-bottom:18px;box-shadow:0 6px 20px rgba(13,36,77,0.02)}
 .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.btn {display:inline-block;padding:8px 14px;border-radius:8px;border:1px solid transparent;background:var(--accent);color:#fff;font-weight:600;text-decoration:none}
-.btn.ghost{background:#fff;border-color:#e6eef6;color:#111}
 .table{width:100%;border-collapse:collapse}
 .table th, .table td{padding:12px 14px;border-bottom:1px solid #f1f5f9;text-align:left}
 .search{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6}

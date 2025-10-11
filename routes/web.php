@@ -34,8 +34,7 @@ route::group([
     'prefix' => 'fonts',   
     'as' => 'fonts.' 
 ], function (){
-    Route::get('/', [FontController::class, 'index'])->name('index'); // danh sách fonts
-    Route::get('/create', [FontController::class, 'create'])->name('create'); // form thêm font
+    Route::get('/', [FontController::class, 'index'])->name('index'); // danh sách fonts // form thêm font
     Route::post('/', [FontController::class, 'store'])->name('store'); // lưu font mới
     Route::get('/{id}', [FontController::class, 'show'])->name('show'); // chi tiết font
     Route::get('/{id}/edit', [FontController::class, 'edit'])->name('edit'); // form sửa font

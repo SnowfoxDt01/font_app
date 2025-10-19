@@ -10,17 +10,19 @@ class Font extends Model
     use HasFactory;
     public $table = 'fonts';
     protected $fillable = [
-        'name',
-        'slug',
-        'file_path',
-        'preview_text',
-        'format',
-        'category_id',
-        'downloads',
-        'status',
-        'created_at',
-        'updated_at',
-    ];
+    'family_name',
+    'slug',
+    'file_path',
+    'format',
+    'status',
+    'category_id',
+    'downloads',
+    'subfamily',
+    'weight',
+    'style',
+    
+];
+
 
     public function category()
     {

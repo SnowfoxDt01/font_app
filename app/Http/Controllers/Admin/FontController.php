@@ -8,11 +8,14 @@ use App\Models\Font;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use FontLib\Font as FontLibFont;
 
 class FontController extends Controller
 {
-    // Hiển thị danh sách font
-    public function index(Request $request){
+    // 📄 Danh sách font
+    public function index(Request $request)
+    {
         $query = Font::with('category', 'tags');
 
         if ($request->has('category')) {
@@ -26,82 +29,109 @@ class FontController extends Controller
         }
 
         $fonts = $query->paginate(12);
-
         return view('Admin.Font.list-font', compact('fonts'));
     }
 
-
-
-    // Lưu font mới
-    public function store(Request $request){
-    $data = $request->validate([
-        'file_path' => 'required|file|mimetypes:font/ttf,font/sfnt,application/x-font-ttf,application/octet-stream',
-    ]);
-
-    $file = $request->file('file_path');
-    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-    $extension = $file->getClientOriginalExtension();
-    $filename = time() . '_' . $file->getClientOriginalName();
-
-    // Lưu file
-    $path = $file->storeAs('fonts', $filename, 'public');
-
-    // Tạo slug từ tên file (bỏ khoảng trắng, ký tự đặc biệt)
-    $slug = Str::slug($originalName);
-
-    // Tạo bản ghi trong DB
-    $font = Font::create([
-        'name' => $originalName,
-        'slug' => $slug,
-        'file_path' => $path,
-        'format' => $extension,
-        'status' => true,
-    ]);
-
-    return redirect()->route('admin.fonts.index')->with('success', 'Tải lên font thành công!');
-}
-
-
-    // Hiển thị chi tiết 1 font
-    public function show($id){
-        $font = Font::with('category', 'tags')->findOrFail($id);
-        return view('Admin.Font.show-font', compact('font'));
-    }
-
-    // Hiển thị form edit
-    public function edit($id)
+    // 📤 Lưu font mới
+    public function store(Request $request)
     {
-        $font = Font::findOrFail($id);
-        $categories = Category::all();
-        $tags = Tag::all();
-        return view('Admin.Font.edit-font', compact('font', 'categories', 'tags'));
-    }
-
-    // Cập nhật font
-    public function update(Request $request, $id){
-        $font = Font::findOrFail($id);
-
         $data = $request->validate([
-            'name' => 'required|string|max:150',
-            'slug' => 'required|string|max:150|unique:fonts,slug,' . $id,
-            'file_path' => 'required|string|max:255',
-            'preview_text' => 'nullable|string|max:255',
-            'format' => 'required|in:ttf,otf,woff,woff2',
-            'category_id' => 'required|exists:categories,id',
-            'status' => 'boolean',
+            'file_path' => 'required|file|mimetypes:font/ttf,font/sfnt,application/x-font-ttf,application/octet-stream',
         ]);
 
-        $font->update($data);
+        $file = $request->file('file_path');
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
 
-        if ($request->tags) {
-            $font->tags()->sync($request->tags);
+        // Lưu file vào storage/app/public/fonts
+        $path = $file->storeAs('fonts', $filename, 'public');
+
+        // Giá trị mặc định
+        $slug = Str::slug($originalName);
+        $weight = 400;
+        $style = 'normal';
+        $fullName = null;
+        $postscript = null;
+        $familyName = null;
+
+        // 🧠 Đọc metadata từ file font
+        try {
+            $fontPath = storage_path('app/public/' . $path);
+            $font = FontLibFont::load($fontPath);
+            $font->parse();
+
+            // Kiểm tra class thực tế
+            $className = get_class($font);
+
+            // Một số class có hỗ trợ getFontNames
+            if (method_exists($font, 'getFontNames')) {
+                $nameTable = $font->getFontNames();
+
+                $fullName = $nameTable['fullName'] ?? null;
+                $postscript = $nameTable['postscriptName'] ?? $nameTable['postScriptName'] ?? null;
+                $styleName = $nameTable['subfamily'] ?? ($nameTable['style'] ?? null);
+                $familyName = $nameTable['family'] ?? $nameTable['fontFamily'] ?? null;
+
+                if ($familyName) {
+                    $slug = Str::slug($familyName);
+                }
+
+                if (!empty($styleName)) {
+                    $s = strtolower($styleName);
+                    $style = strpos($s, 'italic') !== false ? 'italic' : 'normal';
+
+                    if (strpos($s, 'thin') !== false) $weight = 100;
+                    elseif (strpos($s, 'extralight') !== false || strpos($s, 'ultralight') !== false) $weight = 200;
+                    elseif (strpos($s, 'light') !== false) $weight = 300;
+                    elseif (strpos($s, 'regular') !== false || strpos($s, 'book') !== false) $weight = 400;
+                    elseif (strpos($s, 'medium') !== false) $weight = 500;
+                    elseif (strpos($s, 'semibold') !== false || strpos($s, 'demibold') !== false) $weight = 600;
+                    elseif (strpos($s, 'bold') !== false) $weight = 700;
+                    elseif (strpos($s, 'extrabold') !== false || strpos($s, 'ultrabold') !== false || strpos($s, 'heavy') !== false) $weight = 800;
+                    elseif (strpos($s, 'black') !== false) $weight = 900;
+                }
+            } else {
+                // WOFF có thể không hỗ trợ getFontNames
+                // Bạn có thể fallback hoặc convert WOFF sang TTF nếu muốn extract metadata
+                throw new \Exception("Font format not supported for metadata extraction: " . $className);
+            }
+
+        } catch (\Exception $e) {
+            // ⚠️ fallback theo tên file
+            $nameLower = strtolower($originalName);
+
+            if (strpos($nameLower, 'italic') !== false) $style = 'italic';
+            if (strpos($nameLower, 'thin') !== false) $weight = 100;
+            elseif (strpos($nameLower, 'extralight') !== false || strpos($nameLower, 'ultralight') !== false) $weight = 200;
+            elseif (strpos($nameLower, 'light') !== false) $weight = 300;
+            elseif (strpos($nameLower, 'regular') !== false) $weight = 400;
+            elseif (strpos($nameLower, 'medium') !== false) $weight = 500;
+            elseif (strpos($nameLower, 'semibold') !== false || strpos($nameLower, 'demibold') !== false) $weight = 600;
+            elseif (strpos($nameLower, 'bold') !== false) $weight = 700;
+            elseif (strpos($nameLower, 'extrabold') !== false || strpos($nameLower, 'ultrabold') !== false || strpos($nameLower, 'heavy') !== false) $weight = 800;
+            elseif (strpos($nameLower, 'black') !== false) $weight = 900;
         }
 
-        return redirect()->route('admin.fonts.index')->with('success', 'Font đã được cập nhật');
+
+        // 🗃️ Lưu vào database
+        $font = Font::create([
+            'family_name' => $familyName ?? $fullName ?? $originalName,
+            'slug'        => $slug,
+            'file_path'   => $path,
+            'format'      => $extension,
+            'status'      => true,
+            'weight'      => $weight,
+            'style'       => $style,
+        ]);
+
+
+        return redirect()->route('admin.fonts.index')->with('success', 'Tải lên font thành công!');
     }
 
-    // Xoá font
-    public function destroy($id){
+    // 🗑️ Xóa font
+    public function destroy($id)
+    {
         $font = Font::findOrFail($id);
         $font->delete();
         return redirect()->route('admin.fonts.index')->with('success', 'Font đã bị xoá');

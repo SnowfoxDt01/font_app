@@ -67,16 +67,16 @@
             <tbody>
                 @forelse($fonts as $font)
                     <tr>
-                        <td>{{ $font->name }}</td>
+                        <td>{{ $font->family_name }}</td>
                         <td>{{ $font->slug }}</td>
-                        <td style="font-family: '{{ $font->name }}', sans-serif; font-size: 18px;">
+                        <td style="font-family: '{{ $font->slug }}', sans-serif; font-style: {{ $font->style }}; font-size: 18px;">
                             Hello world
                         </td>
 
+
                         <td>
                             <div class="action-buttons">
-                                <a href="{{ route('admin.fonts.show', $font->id) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-eye"></i></a>
-                                <a href="{{ route('admin.fonts.edit', $font->id) }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-pen"></i></a>
+                                
                                 <form action="{{ route('admin.fonts.destroy', $font->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
@@ -120,6 +120,18 @@
         .action-buttons .btn {
             padding: 2px 6px;
             font-size: 12px;
+        }
+        {{-- Font-face động --}}
+        @foreach($fonts as $font)
+            @font-face {
+                font-family: '{{ $font->slug }}';
+                src: url('{{ asset('storage/' . $font->file_path) }}') format('{{ $font->format }}');
+                font-weight: normal;
+                font-style: normal;
+            }
+        @endforeach
+        .preview-text {
+            font-size: 18px;
         }
     </style>
 @endsection
